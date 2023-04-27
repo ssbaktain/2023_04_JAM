@@ -1,16 +1,12 @@
-package com.KoreaIT.JAM;
+package com.KoreaIT.JAM.test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-class Article {
-	int id;
-	String title;
-	String body;
-	
-	Article(int id, String title, String body) {
+public class JDBCInsertTest2 {
+	public static void main(String[] args) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -23,8 +19,8 @@ class Article {
 			String sql = "INSERT INTO article";
 			sql += " SET regDate = NOW()";
 			sql += ", updateDate = NOW()";
-			sql += ", title = '" + title + "'";
-			sql += ", `body` = '" + body + "';";
+			sql += ", title = '제목" + ((int)(Math.random() * 100) + 1) + "'";
+			sql += ", `body` = '내용" + ((int)(Math.random() * 100) + 1) + "';";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.executeUpdate();
