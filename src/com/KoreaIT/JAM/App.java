@@ -76,6 +76,28 @@ public class App {
 					for (Article article : articles) {
 						System.out.printf("%d	|	%s	|	%s\n", article.id, article.title, article.regDate);
 					}
+				} else if (cmd.startsWith("article detail ")) {
+					int id = Integer.parseInt(cmd.split(" ")[2]);
+
+					SecSql sql = new SecSql();
+					sql.append("SELECT *");
+					sql.append("FROM article");
+					sql.append("WHERE id = ?", id);
+					
+					Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+					if (articleMap.isEmpty()) {
+						System.out.println("해당하는 게시글이 존재하지 않습니다.");
+						continue;
+					}
+					
+					Article article = new Article(articleMap);
+					System.out.printf("== %d번 게시물 상세보기 ==\n", id);
+					System.out.println("번호 : " + article.id);
+					System.out.println("작성일 : " + article.regDate);
+					System.out.println("최근 수정일 : " + article.updateDate);
+					System.out.println("제목 : " + article.title);
+					System.out.println("내용 : " + article.body);
+					
 				} else if (cmd.startsWith("article modify ")) {
 					int id = Integer.parseInt(cmd.split(" ")[2]);
 
@@ -107,6 +129,27 @@ public class App {
 					DBUtil.update(conn, sql);
 					
 					System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
+				} else if (cmd.startsWith("article delete ")) {
+					int id = Integer.parseInt(cmd.split(" ")[2]);
+					
+					SecSql sql = new SecSql();
+					sql.append("SELECT COUNT(*) > 0");
+					sql.append("FROM article");
+					sql.append("WHERE id = ?", id);
+					
+					boolean isHaveArticle = DBUtil.selectRowBooleanValue(conn, sql);
+					
+					if (!isHaveArticle) {
+						System.out.println(id + "번 게시물은 존재하지 않습니다.");
+						continue;
+					}
+					
+					sql = new SecSql();
+					sql.append("DELETE FROM article");
+					sql.append("WHERE id = ?", id);
+					
+					DBUtil.delete(conn, sql);
+					System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
 				}
 			}
 
