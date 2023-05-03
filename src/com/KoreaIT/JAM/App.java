@@ -34,7 +34,76 @@ public class App {
 					break;
 				}
 
-				if (cmd.equals("article write")) {
+				if (cmd.equals("member join")) {
+					String loginId;
+					String loginPw;
+					String name;
+					
+					System.out.println("== 회원 가입 ==");
+					while (true) {
+						System.out.print("로그인 아이디 : ");
+						loginId = sc.nextLine().trim();
+						
+						if (loginId.equals("")) {
+							System.out.println("아이디는 필수입력정보입니다.");
+							continue;
+						}
+						
+						SecSql sql = new SecSql();
+						sql.append("SELECT COUNT(*)");
+						sql.append("FROM member");
+						sql.append("WHERE loginId = ?", loginId);
+						
+						int memberCount = DBUtil.selectRowIntValue(conn, sql);
+						
+						if (memberCount == 1) {
+							System.out.println("이미 존재하는 아이디입니다.");
+							continue;
+						}
+						
+						while (true) {
+							System.out.print("로그인 비밀번호 : ");
+							loginPw = sc.nextLine().trim();
+							
+							if (loginPw.equals("")) {
+								System.out.println("비밀번호는 필수입력정보입니다.");
+								continue;
+							}
+							
+							System.out.print("로그인 비밀번호 확인 : ");
+							String checkLoginPw = sc.nextLine().trim();
+							
+							if (!checkLoginPw.equals(loginPw)) {
+								System.out.println("비밀번호가 일치하지 않습니다.");
+								continue;
+							}
+							break;
+						}
+						break;
+					}
+					while (true) {
+						System.out.print("이름 : ");
+						name = sc.nextLine().trim();
+						
+						if (name.equals("")) {
+							System.out.println("이름은 필수입력정보입니다.");
+							continue;
+						}
+						break;
+					}
+					
+					SecSql sql = new SecSql();
+					sql.append("INSERT INTO member");
+					sql.append("SET regDate = NOW()");
+					sql.append(", updateDate = NOW()");
+					sql.append(", loginId = ?", loginId);
+					sql.append(", loginPw = ?", loginPw);
+					sql.append(", name = ?", name);
+					
+					DBUtil.insert(conn, sql);
+					
+					System.out.println(name + "님, 환영합니다.");
+				} else if (cmd.equals("article write")) {
 					System.out.println("== 게시물 작성 ==");
 					System.out.print("제목 : ");
 					String title = sc.nextLine();
@@ -150,6 +219,8 @@ public class App {
 					
 					DBUtil.delete(conn, sql);
 					System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
+				} else {
+					System.out.println(cmd + "존재하지 않는 명령어입니다.");
 				}
 			}
 
