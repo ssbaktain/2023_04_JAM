@@ -2,7 +2,6 @@ package com.KoreaIT.JAM.controller;
 
 import java.sql.Connection;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import com.KoreaIT.JAM.Article;
@@ -19,20 +18,22 @@ public class ArticleController extends Container {
 	}
 	
 	public void doAction(String cmd) {
-		switch (cmd) {
-		case "article write" :
+		String cmdBit[] = cmd.split(" ");
+		
+		switch (cmdBit[1]) {
+		case "write" :
 			doWrite();
 			break;
-		case "article list" :
+		case "list" :
 			showList();
 			break;
-		case "article detail" :
+		case "detail" :
 			showDetail(cmd);
 			break;
-		case "article modify" :
+		case "modify" :
 			doModify(cmd);
 			break;
-		case "article delete" :
+		case "delete" :
 			doDelete(cmd);
 			break;
 		}
@@ -68,14 +69,13 @@ public class ArticleController extends Container {
 	private void showDetail(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 
-		Map<String, Object> articleMap = articleService.selectRow(id);
+		Article article = articleService.getArticle(id);
 		
-		if (articleMap.isEmpty()) {
+		if (article == null) {
 			System.out.println("해당하는 게시글이 존재하지 않습니다.");
 			return;
 		}
 		
-		Article article = new Article(articleMap);
 		System.out.printf("== %d번 게시물 상세보기 ==\n", id);
 		System.out.println("번호 : " + article.id);
 		System.out.println("작성일 : " + article.regDate);
@@ -87,7 +87,7 @@ public class ArticleController extends Container {
 	private void doModify(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 
-		int articleCount = articleService.selectRowIntValue(id);
+		int articleCount = articleService.getArticleCount(id);
 		
 		if (articleCount == 0) {
 			System.out.println(id + "번 게시물은 존재하지 않습니다.");
@@ -100,7 +100,7 @@ public class ArticleController extends Container {
 		System.out.print("수정할 내용 : ");
 		String body = sc.nextLine();
 
-		articleService.dbUpdate(title, body, id);
+		articleService.doModify(id, title, body);
 		
 		System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
 	}
@@ -108,14 +108,14 @@ public class ArticleController extends Container {
 	private void doDelete(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 		
-		boolean isHaveArticle = articleService.selectRowBooleanValue(id);
+		int articleCount = articleService.getArticleCount(id);
 		
-		if (!isHaveArticle) {
+		if (articleCount == 0) {
 			System.out.println(id + "번 게시물은 존재하지 않습니다.");
 			return;
 		}
 		
-		articleService.dbDelete(id);
+		articleService.doDelete(id);
 		
 		System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
 	}

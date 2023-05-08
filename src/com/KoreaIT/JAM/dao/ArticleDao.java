@@ -34,7 +34,7 @@ public class ArticleDao {
 		return DBUtil.selectRows(conn, sql);
 	}
 
-	public Map<String, Object> selectRow(int id) {
+	public Map<String, Object> getArticle(int id) {
 		SecSql sql = new SecSql();
 		sql.append("SELECT *");
 		sql.append("FROM article");
@@ -43,7 +43,7 @@ public class ArticleDao {
 		return DBUtil.selectRow(conn, sql);
 	}
 
-	public int selectRowIntValue(int id) {
+	public int getArticleCount(int id) {
 		SecSql sql = new SecSql();
 		sql.append("SELECT COUNT(*)");
 		sql.append("FROM article");
@@ -52,7 +52,7 @@ public class ArticleDao {
 		return DBUtil.selectRowIntValue(conn, sql);
 	}
 
-	public void dbUpdate(String title, String body, int id) {
+	public void doModify(int id, String title, String body) {
 		SecSql sql = new SecSql();
 		sql.append("UPDATE article");
 		sql.append("SET updateDate = NOW()");
@@ -63,16 +63,7 @@ public class ArticleDao {
 		DBUtil.update(conn, sql);
 	}
 
-	public boolean selectRowBooleanValue(int id) {
-		SecSql sql = new SecSql();
-		sql.append("SELECT COUNT(*) > 0");
-		sql.append("FROM article");
-		sql.append("WHERE id = ?", id);
-		
-		return DBUtil.selectRowBooleanValue(conn, sql);
-	}
-
-	public void dbDelete(int id) {
+	public void doDelete(int id) {
 		SecSql sql = new SecSql();
 		sql.append("DELETE FROM article");
 		sql.append("WHERE id = ?", id);

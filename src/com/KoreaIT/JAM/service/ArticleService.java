@@ -32,23 +32,24 @@ public class ArticleService {
 		return articles;
 	}
 
-	public Map<String, Object> selectRow(int id) {
-		return articleDao.selectRow(id);
+	public Article getArticle(int id) {
+		Map<String, Object> articleMap = articleDao.getArticle(id);
+		
+		if (articleMap.isEmpty()) {
+			return null;
+		}
+		return new Article(articleMap);
 	}
 
-	public int selectRowIntValue(int id) {
-		return articleDao.selectRowIntValue(id);
+	public int getArticleCount(int id) {
+		return articleDao.getArticleCount(id);
 	}
 
-	public void dbUpdate(String title, String body, int id) {
-		articleDao.dbUpdate(title, body, id);
+	public void doModify(int id, String title, String body) {
+		articleDao.doModify(id, title, body);
 	}
 
-	public boolean selectRowBooleanValue(int id) {
-		return articleDao.selectRowBooleanValue(id);
-	}
-
-	public void dbDelete(int id) {
-		articleDao.dbDelete(id);
+	public void doDelete(int id) {
+		articleDao.doDelete(id);
 	}
 }
