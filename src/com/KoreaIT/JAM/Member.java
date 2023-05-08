@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Member {
+	public static int nowLoginedUser = 0;
 	int id;
 	LocalDateTime regDate;
 	LocalDateTime updateDate;
