@@ -5,12 +5,12 @@ import java.util.Map;
 
 public class Member {
 	public static int nowLoginedUser = 0;
-	int id;
-	LocalDateTime regDate;
-	LocalDateTime updateDate;
-	String loginId;
-	String loginPw;
-	String name;
+	public int id;
+	public LocalDateTime regDate;
+	public LocalDateTime updateDate;
+	public String loginId;
+	public String loginPw;
+	public String name;
 	
 	public Member(Map<String, Object> memberMap) {
 		this.id = (int) memberMap.get("id");

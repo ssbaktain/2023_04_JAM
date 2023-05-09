@@ -3,9 +3,10 @@ package com.KoreaIT.JAM.controller;
 import java.sql.Connection;
 import java.util.Scanner;
 
+import com.KoreaIT.JAM.Member;
 import com.KoreaIT.JAM.container.Container;
 import com.KoreaIT.JAM.service.MemberService;
-import com.KoreaIT.JAM.util.DBUtil;
+import com.KoreaIT.JAM.session.Session;
 import com.KoreaIT.JAM.util.SecSql;
 
 public class MemberController extends Container {
@@ -21,7 +22,7 @@ public class MemberController extends Container {
 		String cmdBit[] = cmd.split(" ");
 		
 		switch (cmdBit[1]) {
-		case "member join" :
+		case "join" :
 			doJoin(cmd);
 			break;
 		case "login":
@@ -31,6 +32,12 @@ public class MemberController extends Container {
 	}
 
 	private void doJoin(String cmd) {
+		
+		if (Session.loginedMemberId == -1) {
+			System.out.println("로그아웃 후 이용해주세요.");
+			return;
+		}
+		
 		String loginId;
 		String loginPw;
 		String name;
@@ -91,21 +98,28 @@ public class MemberController extends Container {
 	}
 	
 	private void doLogin(String cmd) {
+		
+		if (Session.loginedMemberId == -1) {
+			System.out.println("로그아웃 후 이용해주세요.");
+			return;
+		}
+		
 		String loginId;
 		String loginPw;
 		
 		while (true) {
 			System.out.print("로그인 아이디 : ");
-			loginId = sc.nextLine();
+			loginId = sc.nextLine().trim();
 			if (loginId.length() == 0) {
 				System.out.println("아이디를 입력해주세요.");
 				continue;
 			}
 			break;
 		}
+		
 		while (true) {
 			System.out.print("로그인 비밀번호 : ");
-			loginPw = sc.nextLine();
+			loginPw = sc.nextLine().trim();
 			if (loginPw.length() == 0) {
 				System.out.println("비밀번호를 입력해주세요.");
 				continue;
@@ -113,29 +127,21 @@ public class MemberController extends Container {
 			break;
 		}
 		
-		SecSql sql = new SecSql();
-		sql.append("SELECT COUNT(*)");
-		sql.append("FROM `member`");
-		sql.append("WHERE loginId = ?", loginId);
+		Member member = memberService.getMember(loginId);
 		
-		int foundMemberLoginIdCount = memberService.selectRowIntValue(loginId);
-		if (foundMemberLoginIdCount == 0) {
-			System.out.println("아이디가 올바르지 않습니다.");
+		if (member == null) {
+			System.out.printf("%s은(는) 존재하지 않는 아이디입니다.\n", loginId);
 			return;
 		}
 		
-		sql = new SecSql();
-		sql.append("SELECT COUNT(*)");
-		sql.append("FROM `member`");
-		sql.append("WHERE loginId = ?", loginId);
-		sql.append(", loginPw = ?", loginPw);
-		
-		int foundMemberLoginPwCount = memberService.selectRowIntValue(loginPw);
-		if (foundMemberLoginPwCount == 0) {
+		if (!member.loginPw.equals(loginPw)) {
 			System.out.println("비밀번호가 올바르지 않습니다.");
 			return;
 		}
 		
-		System.out.println("**님 환영합니다.");
+		System.out.printf("%s님 환영합니다.\n", member.name);
+		
+		Session.loginedMemberId = member.id;
+		Session.loginedMember = member;
 	}
 }
