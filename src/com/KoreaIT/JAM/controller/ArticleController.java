@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
 
-import com.KoreaIT.JAM.Article;
 import com.KoreaIT.JAM.container.Container;
+import com.KoreaIT.JAM.dto.Article;
 import com.KoreaIT.JAM.service.ArticleService;
+import com.KoreaIT.JAM.session.Session;
+import com.KoreaIT.JAM.util.Util;
 
 public class ArticleController extends Container {
 	private Scanner sc;
@@ -40,13 +42,18 @@ public class ArticleController extends Container {
 	}
 
 	private void doWrite() {
+		if (!Session.isLogined()) {
+			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
+		
 		System.out.println("== 게시물 작성 ==");
 		System.out.print("제목 : ");
 		String title = sc.nextLine();
 		System.out.print("내용 : ");
 		String body = sc.nextLine();
 
-		int id = articleService.doWrite(title, body);
+		int id = articleService.doWrite(title, body, Session.loginedMemberId);
 		
 		System.out.printf("%d번 게시글이 생성되었습니다.\n", id);
 	}
@@ -60,9 +67,10 @@ public class ArticleController extends Container {
 		}
 
 		System.out.println("== 게시물 리스트 ==");
-		System.out.printf("번호	|	제목	|	날짜\n");
+		System.out.printf("번호	|	제목	|	작성자	|	날짜\n");
 		for (Article article : articles) {
-			System.out.printf("%d	|	%s	|	%s\n", article.id, article.title, article.regDate);
+			String memberName = articleService.getWriterName(article.id);
+			System.out.printf("%d	|	%s	|	%s	|	%s\n", article.id, article.title, memberName, Util.dateTimeFormat(article.regDate));
 		}
 	}
 	
@@ -78,13 +86,18 @@ public class ArticleController extends Container {
 		
 		System.out.printf("== %d번 게시물 상세보기 ==\n", id);
 		System.out.println("번호 : " + article.id);
-		System.out.println("작성일 : " + article.regDate);
-		System.out.println("최근 수정일 : " + article.updateDate);
+		System.out.println("작성일 : " + Util.dateTimeFormat(article.regDate));
+		System.out.println("최근 수정일 : " + Util.dateTimeFormat(article.regDate));
 		System.out.println("제목 : " + article.title);
 		System.out.println("내용 : " + article.body);
 	}
 	
 	private void doModify(String cmd) {
+		if (!Session.isLogined()) {
+			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
+		
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 
 		int articleCount = articleService.getArticleCount(id);
@@ -106,6 +119,11 @@ public class ArticleController extends Container {
 	}
 	
 	private void doDelete(String cmd) {
+		if (!Session.isLogined()) {
+			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
+		
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 		
 		int articleCount = articleService.getArticleCount(id);

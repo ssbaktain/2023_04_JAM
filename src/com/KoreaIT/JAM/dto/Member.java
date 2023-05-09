@@ -1,10 +1,9 @@
-package com.KoreaIT.JAM;
+package com.KoreaIT.JAM.dto;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Member {
-	public static int nowLoginedUser = 0;
 	public int id;
 	public LocalDateTime regDate;
 	public LocalDateTime updateDate;

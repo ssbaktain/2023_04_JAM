@@ -3,11 +3,10 @@ package com.KoreaIT.JAM.controller;
 import java.sql.Connection;
 import java.util.Scanner;
 
-import com.KoreaIT.JAM.Member;
 import com.KoreaIT.JAM.container.Container;
+import com.KoreaIT.JAM.dto.Member;
 import com.KoreaIT.JAM.service.MemberService;
 import com.KoreaIT.JAM.session.Session;
-import com.KoreaIT.JAM.util.SecSql;
 
 public class MemberController extends Container {
 	private Scanner sc;
@@ -23,17 +22,19 @@ public class MemberController extends Container {
 		
 		switch (cmdBit[1]) {
 		case "join" :
-			doJoin(cmd);
+			doJoin();
 			break;
 		case "login":
-			doLogin(cmd);
+			doLogin();
+			break;
+		case "logout":
+			doLogout();
 			break;
 		}
 	}
 
-	private void doJoin(String cmd) {
-		
-		if (Session.loginedMemberId == -1) {
+	private void doJoin() {
+		if (Session.isLogined()) {
 			System.out.println("로그아웃 후 이용해주세요.");
 			return;
 		}
@@ -97,9 +98,8 @@ public class MemberController extends Container {
 		System.out.println(name + "님, 환영합니다.");
 	}
 	
-	private void doLogin(String cmd) {
-		
-		if (Session.loginedMemberId == -1) {
+	private void doLogin() {
+		if (Session.isLogined()) {
 			System.out.println("로그아웃 후 이용해주세요.");
 			return;
 		}
@@ -141,7 +141,17 @@ public class MemberController extends Container {
 		
 		System.out.printf("%s님 환영합니다.\n", member.name);
 		
-		Session.loginedMemberId = member.id;
-		Session.loginedMember = member;
+		Session.login(member);
+	}
+	
+	private void doLogout() {
+		if (!Session.isLogined()) {
+			System.out.println("이미 로그아웃 상태입니다.");
+			return;
+		}
+		
+		Session.logout();
+		
+		System.out.println("로그아웃 되었습니다.");
 	}
 }
