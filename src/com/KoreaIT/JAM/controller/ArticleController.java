@@ -4,13 +4,12 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
 
-import com.KoreaIT.JAM.container.Container;
 import com.KoreaIT.JAM.dto.Article;
 import com.KoreaIT.JAM.service.ArticleService;
 import com.KoreaIT.JAM.session.Session;
 import com.KoreaIT.JAM.util.Util;
 
-public class ArticleController extends Container {
+public class ArticleController {
 	private Scanner sc;
 	private ArticleService articleService;
 
@@ -69,8 +68,7 @@ public class ArticleController extends Container {
 		System.out.println("== 게시물 리스트 ==");
 		System.out.printf("번호	|	제목	|	작성자	|	날짜\n");
 		for (Article article : articles) {
-			String memberName = articleService.getWriterName(article.id);
-			System.out.printf("%d	|	%s	|	%s	|	%s\n", article.id, article.title, memberName, Util.dateTimeFormat(article.regDate));
+			System.out.printf("%d	|	%s	|	%s	|	%s\n", article.id, article.title, article.writerName, Util.dateTimeFormat(article.regDate));
 		}
 	}
 	
@@ -88,6 +86,7 @@ public class ArticleController extends Container {
 		System.out.println("번호 : " + article.id);
 		System.out.println("작성일 : " + Util.dateTimeFormat(article.regDate));
 		System.out.println("최근 수정일 : " + Util.dateTimeFormat(article.regDate));
+		System.out.println("작성자 : " + article.writerName);
 		System.out.println("제목 : " + article.title);
 		System.out.println("내용 : " + article.body);
 	}

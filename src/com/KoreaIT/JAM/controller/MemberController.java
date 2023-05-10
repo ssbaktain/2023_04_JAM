@@ -3,12 +3,11 @@ package com.KoreaIT.JAM.controller;
 import java.sql.Connection;
 import java.util.Scanner;
 
-import com.KoreaIT.JAM.container.Container;
 import com.KoreaIT.JAM.dto.Member;
 import com.KoreaIT.JAM.service.MemberService;
 import com.KoreaIT.JAM.session.Session;
 
-public class MemberController extends Container {
+public class MemberController {
 	private Scanner sc;
 	private MemberService memberService;
 	

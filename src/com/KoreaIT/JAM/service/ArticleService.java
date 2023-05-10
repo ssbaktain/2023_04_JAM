@@ -52,8 +52,4 @@ public class ArticleService {
 	public void doDelete(int id) {
 		articleDao.doDelete(id);
 	}
-
-	public String getWriterName(int id) {
-		return articleDao.getWriterName(id);
-	}
 }
