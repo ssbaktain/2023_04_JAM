@@ -48,9 +48,9 @@ public class ArticleDao {
 		return DBUtil.selectRow(conn, sql);
 	}
 
-	public int getArticleCount(int id) {
+	public int getWriterId(int id) {
 		SecSql sql = new SecSql();
-		sql.append("SELECT COUNT(*)");
+		sql.append("SELECT article.memberId");
 		sql.append("FROM article");
 		sql.append("WHERE id = ?", id);
 		
@@ -74,5 +74,14 @@ public class ArticleDao {
 		sql.append("WHERE id = ?", id);
 		
 		DBUtil.delete(conn, sql);
+	}
+
+	public int increaseHit(int id) {
+		SecSql sql = new SecSql();
+		sql.append("UPDATE article");
+		sql.append("SET hit = hit + 1");
+		sql.append("WHERE id = ?", id);
+		
+		return DBUtil.update(conn, sql);
 	}
 }

@@ -41,8 +41,8 @@ public class ArticleService {
 		return new Article(articleMap);
 	}
 
-	public int getArticleCount(int id) {
-		return articleDao.getArticleCount(id);
+	public int getWriterId(int id) {
+		return articleDao.getWriterId(id);
 	}
 
 	public void doModify(int id, String title, String body) {
@@ -51,5 +51,9 @@ public class ArticleService {
 
 	public void doDelete(int id) {
 		articleDao.doDelete(id);
+	}
+
+	public int increaseHit(int id) {
+		return articleDao.increaseHit(id);
 	}
 }

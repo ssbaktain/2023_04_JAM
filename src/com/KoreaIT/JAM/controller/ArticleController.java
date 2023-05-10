@@ -26,7 +26,7 @@ public class ArticleController {
 			doWrite();
 			break;
 		case "list" :
-			showList();
+			showList(cmd);
 			break;
 		case "detail" :
 			showDetail(cmd);
@@ -57,7 +57,7 @@ public class ArticleController {
 		System.out.printf("%d번 게시글이 생성되었습니다.\n", id);
 	}
 	
-	private void showList() {
+	private void showList(String cmd) {
 		List<Article> articles = articleService.getArticles();
 
 		if (articles.size() == 0) {
@@ -66,27 +66,30 @@ public class ArticleController {
 		}
 
 		System.out.println("== 게시물 리스트 ==");
-		System.out.printf("번호	|	제목	|	작성자	|	날짜\n");
+		System.out.printf("번호	|	제목	|	작성자	|	조회수	|	날짜\n");
 		for (Article article : articles) {
-			System.out.printf("%d	|	%s	|	%s	|	%s\n", article.id, article.title, article.writerName, Util.dateTimeFormat(article.regDate));
+			System.out.printf("%d	|	%s	|	%s	|	%d	|	%s\n", article.id, article.title, article.writerName, article.hit, Util.dateTimeFormat(article.regDate));
 		}
 	}
 	
 	private void showDetail(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 
-		Article article = articleService.getArticle(id);
+		int affectedRow = articleService.increaseHit(id);
 		
-		if (article == null) {
+		if (affectedRow == 0) {
 			System.out.println("해당하는 게시글이 존재하지 않습니다.");
 			return;
 		}
 		
+		Article article = articleService.getArticle(id);
+		
 		System.out.printf("== %d번 게시물 상세보기 ==\n", id);
 		System.out.println("번호 : " + article.id);
 		System.out.println("작성일 : " + Util.dateTimeFormat(article.regDate));
-		System.out.println("최근 수정일 : " + Util.dateTimeFormat(article.regDate));
+		System.out.println("최근 수정일 : " + Util.dateTimeFormat(article.updateDate));
 		System.out.println("작성자 : " + article.writerName);
+		System.out.println("조회수 : " + article.hit);
 		System.out.println("제목 : " + article.title);
 		System.out.println("내용 : " + article.body);
 	}
@@ -99,10 +102,13 @@ public class ArticleController {
 		
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 
-		int articleCount = articleService.getArticleCount(id);
+		int writerId = articleService.getWriterId(id);
 		
-		if (articleCount == 0) {
+		if (writerId == -1) {
 			System.out.println(id + "번 게시물은 존재하지 않습니다.");
+			return;
+		} else if (writerId != Session.loginedMemberId) {
+			System.out.println("자신의 게시글이 아닙니다.");
 			return;
 		}
 		
@@ -125,10 +131,13 @@ public class ArticleController {
 		
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 		
-		int articleCount = articleService.getArticleCount(id);
+		int writerId = articleService.getWriterId(id);
 		
-		if (articleCount == 0) {
+		if (writerId == -1) {
 			System.out.println(id + "번 게시물은 존재하지 않습니다.");
+			return;
+		} else if (writerId != Session.loginedMemberId) {
+			System.out.println("자신의 게시글이 아닙니다.");
 			return;
 		}
 		
