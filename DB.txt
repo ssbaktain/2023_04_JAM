@@ -3,74 +3,60 @@ CREATE DATABASE jdbc_article_manager;
 USE jdbc_article_manager;
 
 CREATE TABLE article(
-	id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	regDate DATETIME NOT NULL,
-	updateDate DATETIME NOT NULL,
-	title VARCHAR(100) NOT NULL,
-	`body` TEXT NOT NULL
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    memberId INT UNSIGNED NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    `body` TEXT NOT NULL,
+    hit INT UNSIGNED NOT NULL DEFAULT 0
 );
 
 CREATE TABLE `member`(
-	id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	regDate DATETIME NOT NULL,
-	updateDate DATETIME NOT NULL,
-	loginId VARCHAR(50) NOT NULL UNIQUE,
-	loginPw VARCHAR(100) NOT NULL,
-	`name` VARCHAR(100) NOT NULL
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    loginId VARCHAR(50) NOT NULL UNIQUE,
+    loginPw VARCHAR(50) NOT NULL, 
+    `name` VARCHAR(50) NOT NULL
 );
-
-INSERT INTO `member`
-SET regDate = NOW(),
-updateDate = NOW(),
-loginId = '아이디1',
-loginPw = '비밀번호1',
-`name` = '유저1';
-
-INSERT INTO `member`
-SET regDate = NOW(),
-updateDate = NOW(),
-loginId = '아이디2',
-loginPw = '비밀번호2',
-`name` = '유저2';
-
-INSERT INTO `member`
-SET regDate = NOW(),
-updateDate = NOW(),
-loginId = '아이디3',
-loginPw = '비밀번호3',
-`name` = '유저3';
-
 
 /*
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
-title = concat('제목', rand()),
-`body` = concat('내용',rand());
+memberId = 1,
+title = CONCAT('제목', RAND()),
+`body` = CONCAT('내용', RAND());
 */
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 title = '제목1',
 `body` = '내용1';
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 title = '제목2',
 `body` = '내용2';
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 title = '제목3',
 `body` = '내용3';
 
+INSERT INTO `member`
+SET regDate = NOW(),
+updateDate = NOW(),
+loginId = 'test1',
+loginPw = 'test1',
+`name` = 'test1';
+
 SELECT * FROM article;
 SELECT * FROM `member`;
-
-/*
-delete from article;
-truncate table article;
-*/

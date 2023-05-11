@@ -19,9 +19,9 @@ public class ArticleService {
 		return articleDao.doWrite(title, body, loginedMemberId);
 	}
 
-	public List<Article> getArticles() {
+	public List<Article> getArticles(String target) {
 		
-		List<Map<String,Object>> articleListMap = articleDao.getArticles();
+		List<Map<String,Object>> articleListMap = articleDao.getArticles(target);
 		
 		List<Article> articles = new ArrayList<>();
 		
@@ -39,10 +39,6 @@ public class ArticleService {
 			return null;
 		}
 		return new Article(articleMap);
-	}
-
-	public int getWriterId(int id) {
-		return articleDao.getWriterId(id);
 	}
 
 	public void doModify(int id, String title, String body) {

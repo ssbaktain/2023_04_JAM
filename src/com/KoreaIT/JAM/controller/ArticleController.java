@@ -58,7 +58,10 @@ public class ArticleController {
 	}
 	
 	private void showList(String cmd) {
-		List<Article> articles = articleService.getArticles();
+		String target = cmd.substring("article list".length()).trim();
+		System.out.println(target);
+		
+		List<Article> articles = articleService.getArticles(target);
 
 		if (articles.size() == 0) {
 			System.out.println("존재하는 게시물이 없습니다.");
@@ -66,6 +69,9 @@ public class ArticleController {
 		}
 
 		System.out.println("== 게시물 리스트 ==");
+		if (target.length() > 0) {
+			System.out.println("검색어 : '" + target + "'");
+		}
 		System.out.printf("번호	|	제목	|	작성자	|	조회수	|	날짜\n");
 		for (Article article : articles) {
 			System.out.printf("%d	|	%s	|	%s	|	%d	|	%s\n", article.id, article.title, article.writerName, article.hit, Util.dateTimeFormat(article.regDate));
@@ -102,13 +108,16 @@ public class ArticleController {
 		
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 
-		int writerId = articleService.getWriterId(id);
+		Article article = articleService.getArticle(id);
 		
-		if (writerId == -1) {
+		if (article == null) {
 			System.out.println(id + "번 게시물은 존재하지 않습니다.");
 			return;
-		} else if (writerId != Session.loginedMemberId) {
-			System.out.println("자신의 게시글이 아닙니다.");
+		}
+		
+		if (article.memberId != Session.loginedMemberId) {
+			System.out.println("해당 게시물에 대한 권한이 없습니다.");
+			
 			return;
 		}
 		
@@ -131,13 +140,16 @@ public class ArticleController {
 		
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 		
-		int writerId = articleService.getWriterId(id);
+		Article article = articleService.getArticle(id);
 		
-		if (writerId == -1) {
+		if (article == null) {
 			System.out.println(id + "번 게시물은 존재하지 않습니다.");
 			return;
-		} else if (writerId != Session.loginedMemberId) {
-			System.out.println("자신의 게시글이 아닙니다.");
+		}
+		
+		if (article.memberId != Session.loginedMemberId) {
+			System.out.println("해당 게시물에 대한 권한이 없습니다.");
+			
 			return;
 		}
 		
